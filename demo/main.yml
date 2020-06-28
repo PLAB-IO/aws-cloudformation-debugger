@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  User:
+    Type: AWS::IAM::User
+
+  Nested:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: nested.yml
+
+  User2:
+    Type: AWS::IAM::User
