@@ -1,2 +1,4 @@
 .env
 .cf-main-output.yml
+bin
+.idea

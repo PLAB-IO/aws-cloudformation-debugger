@@ -1,10 +1,39 @@
-ifndef profile
-$(error You must specify profile parameter)
-endif
+PKG ?= github.com/PLAB-IO/aws-cloudformation-debugger
+BIN ?= cfdbg
+VERSION ?= master
+ARCH ?= $(shell go env GOOS)-$(shell go env GOARCH)
 
-ifndef bucket
-$(error You must specify bucket parameter)
-endif
+platform_temp = $(subst -, ,$(ARCH))
+GOOS = $(word 1, $(platform_temp))
+GOARCH = $(word 2, $(platform_temp))
+
+# Code Style
+fmt:
+	go fmt **/*.go
+
+lint:
+	golint ...
+
+sanity: fmt lint
+
+build: build-dirs
+	GOOS=$(GOOS) \
+	GOARCH=$(GOARCH) \
+	VERSION=$(VERSION) \
+	PKG=$(PKG) \
+	BIN=$(BIN) \
+	go build \
+        -o bin/$(GOOS)/$(GOARCH) \
+        $(PKG)/cmd/$(BIN)
+
+build-dirs:
+	@mkdir -p bin/$(GOOS)/$(GOARCH)
+
+test:
+	./bin/darwin/amd64/cfdbg --profile $(profile) --stack-name cfdbg-demo
+
+###################
+###################
 
 deploy-demo:
 	aws --profile $(profile) \
