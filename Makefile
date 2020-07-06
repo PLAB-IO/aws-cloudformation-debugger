@@ -29,8 +29,8 @@ build: build-dirs
 build-dirs:
 	@mkdir -p bin/$(GOOS)/$(GOARCH)
 
-test:
-	./bin/darwin/amd64/cfdbg --profile $(profile) --stack-name cfdbg-demo
+test: build
+	./bin/$(GOOS)/$(GOARCH)/cfdbg --profile $(profile) --stack-name cfdbg-demo
 
 ###################
 ###################

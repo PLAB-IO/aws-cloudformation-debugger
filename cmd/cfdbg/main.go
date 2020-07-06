@@ -3,9 +3,12 @@ package main
 import (
 	"flag"
 	"github.com/PLAB-IO/aws-cloudformation-debugger/internal/cloudformation"
+	"github.com/PLAB-IO/aws-cloudformation-debugger/internal/ui"
+	awsCF "github.com/aws/aws-sdk-go/service/cloudformation"
 	"log"
 	"regexp"
 	"strings"
+	"time"
 )
 
 var (
@@ -36,11 +39,36 @@ func main() {
 	if err := cloudformation.SetProfile(*profile); err != nil {
 		panic(err)
 	}
-	lookupOriginalFailed(stackName)
+	events := lookupOriginalFailed(stackName)
+
+	/*rows := [][]string {
+		{"Timestamp", "Stack Name", "Fail Reason"},
+	}
+	for _, event := range events {
+		rows = append(rows, []string{
+			event.Timestamp.Format(time.Stamp),
+			*event.StackName,
+			*event.ResourceStatusReason,
+		})
+	}
+	ui.PaintTable(rows)*/
+
+	for _, event := range events {
+		rows := [][]string {
+			{"Timestamp", event.Timestamp.Format(time.RFC1123)},
+			{"Stack Name", *event.StackName},
+			{"Stack Status", *event.ResourceStatus},
+			{"Logical Resource Id", *event.LogicalResourceId},
+			{"FAILED Reason", *event.ResourceStatusReason},
+		}
+		ui.PaintTable(rows)
+	}
 }
 
-func lookupOriginalFailed(stackName string) {
+func lookupOriginalFailed(stackName string) []awsCF.StackEvent {
+	response :=  make([] awsCF.StackEvent, 0)
 	events := cloudformation.GetFailEvents(stackName)
+
 	for _, event := range events {
 		if !strings.Contains(*event.ResourceStatus, "FAILED") {
 			continue
@@ -51,15 +79,14 @@ func lookupOriginalFailed(stackName string) {
 
 		re := regexp.MustCompile(`Embedded stack (arn:.*) was not successfully`)
 		matched := re.FindStringSubmatch(*event.ResourceStatusReason)
-		//println(matched[1])
-
-		//println("=====================")
 
 		if len(matched) == 2 {
-			lookupOriginalFailed(matched[1])
+			response = append(response, lookupOriginalFailed(matched[1])...)
 			continue
 		}
 
-		println(event.String())
+		response = append(response, event)
 	}
+
+	return response
 }
