@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/gkdg/testcobra/cmd"
+import "github.com/gkdg/aws-cloudformation-debugger/cmd"
 
 func main() {
 	cmd.Execute()
