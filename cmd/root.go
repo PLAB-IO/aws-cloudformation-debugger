@@ -127,7 +127,7 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".aws-debugger" (without extension).
+		// Search config in home directory with name ".aws-cloudformation-debugger" (without extension).
 		viper.AddConfigPath(home)
 		viper.SetConfigName(".aws-cloudformation-debugger")
 	}
