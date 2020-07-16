@@ -127,9 +127,9 @@ func initConfig() {
 			os.Exit(1)
 		}
 
-		// Search config in home directory with name ".testcobra" (without extension).
+		// Search config in home directory with name ".aws-debugger" (without extension).
 		viper.AddConfigPath(home)
-		viper.SetConfigName(".testcobra")
+		viper.SetConfigName(".aws-cloudformation-debugger")
 	}
 
 	viper.AutomaticEnv() // read in environment variables that match
