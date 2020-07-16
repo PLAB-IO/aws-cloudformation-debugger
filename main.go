@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/gkdg/aws-cloudformation-debugger/cmd"
+import "github.com/PLAB-IO/aws-cloudformation-debugger/cmd"
 
 func main() {
 	cmd.Execute()
