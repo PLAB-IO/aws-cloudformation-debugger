@@ -23,8 +23,7 @@ build: build-dirs
 	PKG=$(PKG) \
 	BIN=$(BIN) \
 	go build \
-        -o bin/$(GOOS)/$(GOARCH) \
-        $(PKG)/cmd/$(BIN)
+        -o bin/$(GOOS)/$(GOARCH)/$(BIN)
 
 build-dirs:
 	@mkdir -p bin/$(GOOS)/$(GOARCH)
